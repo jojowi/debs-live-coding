@@ -11,8 +11,8 @@ import rescala._
 class Frontend {
   private object ui {
     var chatlog: Dynamic = _
-    var message: Dynamic = _
-    var send: Dynamic = _
+    var messageField: Dynamic = _
+    var sendButton: Dynamic = _
   }
   val message = Evt[String]
 
@@ -36,20 +36,13 @@ class Frontend {
 
   $ { () =>
     ui.chatlog = global $ "#chatlog"
-    ui.message = global $ "#message"
-    ui.send = global $ "#send"
+    ui.messageField = global $ "#message"
+    ui.sendButton = global $ "#send"
 
-    ui.send on ("click",
+    ui.sendButton on ("click",
       { () =>
-        message fire ui.message.`val`().toString
+        message fire ui.messageField.`val`().toString
       }
     )
-
-    ui.message on ("keyup", { event: Dynamic =>
-      if (event.keyCode == 13) {
-        event.preventDefault()
-        ui.send trigger "click"
-      }
-    })
   }
 }
