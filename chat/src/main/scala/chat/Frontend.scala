@@ -10,16 +10,17 @@ import rescala._
 
 class Frontend {
   private object ui {
-    var chatlog: Dynamic = _
-    var message: Dynamic = _
-    var send: Dynamic = _
-    var create: Dynamic = _
-    var channelName: Dynamic = _
-    var table: Dynamic = _
-    var main: Dynamic = _
-    var channel: Dynamic = _
+    var mainView: Dynamic = _
+    var channelTable: Dynamic = _
+    var channelNameField: Dynamic = _
+    var createButton: Dynamic = _
+
+    var channelView: Dynamic = _
+    var backToMainButton: Dynamic = _
     var channelTitle: Dynamic = _
-    var backToMain: Dynamic = _
+    var messageField: Dynamic = _
+    var sendButton: Dynamic = _
+    var chatlog: Dynamic = _
   }
   val message = Evt[Message]
   val channel = Evt[String]
@@ -27,26 +28,15 @@ class Frontend {
 
   private val $ = global.$
 
-  def addMessages(messages: Seq[String]): Unit = $ { () =>
-    ui.chatlog append
-      (messages.reverseIterator map { case message =>
-        $("""<li/>""") text message
-      }).toJSArray
-
-    val last = ui.chatlog.children() get -1
-    if (!(js isUndefined last))
-      last.scrollIntoView(false)
-  }
-
   def setChannels(channels: Seq[Channel]): Unit = $ { () =>
-    ui.table.empty();
-    ui.table.append("<tr><th>ID</th><th>Title</th></tr>");
+    ui.channelTable.empty();
+    ui.channelTable.append("<tr><th>ID</th><th>Title</th></tr>");
     channels.reverseIterator foreach { channel =>
-      ui.table append (
-        $("""<tr/>""") append (
-          $("""<td/>""") text channel.id
+      ui.channelTable append (
+        $("<tr/>") append (
+          $("<td/>") text channel.id
           ) append (
-          $("""<td/>""") text channel.name
+          $("<td/>") text channel.name
           ) append (
           $("""<button class="btn btn-default"/>""") click { event: Dynamic =>
             gotoChannel(channel)
@@ -58,62 +48,54 @@ class Frontend {
 
   def setMessages(messages: Seq[String]): Unit = $ { () =>
     ui.chatlog.empty()
-    addMessages(messages)
+
+    ui.chatlog append
+      (messages.reverseIterator map { case message =>
+        $("<li/>") text message
+      }).toJSArray
+
+    val last = ui.chatlog.children() get -1
+    if (!(js isUndefined last))
+      last.scrollIntoView(false)
   }
 
-  def gotoChannel(channel: Channel): Unit = $ { () =>
+  private def gotoChannel(channel: Channel): Unit = $ { () =>
     currentChannel.set(channel)
-    ui.main.hide()
-    ui.channel.show()
+    ui.mainView.hide()
+    ui.channelView.show()
     ui.channelTitle text channel.name
   }
 
   $ { () =>
     ui.chatlog = global $ "#chatlog"
-    ui.message = global $ "#message"
-    ui.send = global $ "#send"
-    ui.create = global $ "#createChannel"
-    ui.channelName = global $ "#channelName"
-    ui.table = global $ "#channelsTable"
-    ui.channel = global $ "#channel"
-    ui.main = global $ "#main"
+    ui.messageField = global $ "#message"
+    ui.sendButton = global $ "#send"
+    ui.createButton = global $ "#createChannel"
+    ui.channelNameField = global $ "#channelName"
+    ui.channelTable = global $ "#channelsTable"
+    ui.channelView = global $ "#channel"
+    ui.mainView = global $ "#main"
     ui.channelTitle = global $ "#channelTitle"
-    ui.backToMain = global $ "#backToMain"
-    ui.channel.hide()
+    ui.backToMainButton = global $ "#backToMain"
+    ui.channelView.hide()
 
-
-    ui.backToMain on ("click",
+    ui.backToMainButton on ("click",
       { () =>
-        ui.channel.hide()
-        ui.main.show()
+        ui.channelView.hide()
+        ui.mainView.show()
       }
     )
 
-    ui.create on ("click",
+    ui.createButton on ("click",
       { () =>
-        channel fire ui.channelName.`val`().toString
+        channel fire ui.channelNameField.`val`().toString
       }
     )
 
-    ui.channelName on ("keyup", { event: Dynamic =>
-      if (event.keyCode == 13) {
-        event.preventDefault()
-        ui.create trigger "click"
-      }
-    })
-
-    ui.send on ("click",
+    ui.sendButton on ("click",
       { () =>
-        println("send")
-        message fire new Message(currentChannel.now.id, ui.message.`val`().toString)
+        message fire new Message(currentChannel.now.id, ui.messageField.`val`().toString)
       }
     )
-
-    ui.message on ("keyup", { event: Dynamic =>
-      if (event.keyCode == 13) {
-        event.preventDefault()
-        ui.send trigger "click"
-      }
-    })
   }
 }
