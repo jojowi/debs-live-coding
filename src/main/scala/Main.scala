@@ -91,11 +91,13 @@ object Main extends App {
   getNotifier(0)
   putNotifier(0, "Hallo")
   getNotifier(0)
+  println()
   for( i <- 1 to 10){
     val key = new java.security.SecureRandom().nextInt()
     getNotifier(key)
     putNotifier(key, "Test" + i)
     getNotifier(key)
+    println()
   }
 
   printNotifier()

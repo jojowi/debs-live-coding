@@ -38,6 +38,8 @@ import scala.math.BigInt
       remote(succ.remote) call printID()
     } else {
       pID = true
+      println()
+      println()
     }
   }
 
@@ -49,14 +51,12 @@ import scala.math.BigInt
 
   def put(key: Int, value: String): Unit on Node = on[Node] {implicit! =>
     val k = hash(key)
-    print(BigInt(k) + "")
     if (between(pred.uid, k, uid)) hashMap.put(BigInt(k), value)
     else Await.ready((remote(succ.remote) call put(key, value)).asLocal, timeout)
   }
 
   def main(): Unit on Node =
     on[Node] {implicit! =>
-      print("")
       var notif: Notifiable[loci.Remote[ChordHashMap.this.Node]] = null
       if (init) notif = remote[Node].joined.foreach(node => {
         notif.remove()
@@ -66,14 +66,22 @@ import scala.math.BigInt
         initialize(remote[Node].connected.head)
       }
       print.foreach(unit => {
+        println()
+        println()
         println("Printing IDs...")
         printID()
         pID = false
       })
       get.foreach(key => {
-        print(get(key).toString())
+        val ret = get(key)
+        if (ret.isEmpty) {
+          println("Querying   " + hash2String(hash(key)) + ", found nothing")
+        } else {
+          println("Querying   " + hash2String(hash(key)) + ", found " + ret.get)
+        }
       })
       put.foreach(req => {
+        println("Adding key " + hash2String(hash(req._1)) + ", value " + req._2)
         put(req._1, req._2)
       })
     }
@@ -198,6 +206,17 @@ import scala.math.BigInt
     BigInt(key1).compare(BigInt(key2))
   }
   def print(msg: String) = {
-    println(BigInt(uid) + ": " + msg)
+    println(hash2String(uid) + ": " + msg)
+  }
+  def hash2String(hash: Array[Byte]): String = {
+    val bigI = BigInt(hash)
+    var string = bigI + ""
+    var negative = false
+    if (string.startsWith("-")) {
+      negative = true
+      string = string.substring(1)
+    }
+    while(string.length < 19) string = "0" + string
+    if (negative) "-" + string.substring(0, 4) else " " + string.substring(0, 4)
   }
 }
