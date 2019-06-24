@@ -13,7 +13,6 @@
       .close { float:none; vertical-align: top; visibility: hidden }
       .own { color: darkgray }
       a:hover .close { visibility: visible }
-
       ol { margin: 0; padding: 0; height: 340px; overflow: auto }
       li { margin: 0; padding: 0; list-style: none }
       html { color: black; background: white }
@@ -24,8 +23,38 @@
     <script type="text/javascript" src="/lib/webrtc-adapter/0.2.5/adapter.js"></script>
     <script type="text/javascript" src="/app.js"></script>
   </head>
-
+  
   <body class="container">
+
+    <div id="channel">
+
+      <button id="backToMain" class="btn btn-default" type="button">Back</button>
+
+      <h1 class="page-header" id="channelTitle">Chat</h1>
+
+      <div class="input-group">
+        <input id="message" type="text" class="form-control" placeholder="Type your message ..." />
+        <span class="input-group-btn">
+          <button id="send" class="btn btn-default" type="button">Send</button>
+        </span>
+      </div>
+
+      <div class="well">
+        <ol id="chatlog"></ol>
+      </div>
+    </div>
+
+    <div id="main">
+      <h1>Current Channels</h1>
+      <table id="channelsTable"><tr><th>ID</th><th>Title</th></tr></table>
+      <h1>Create Channel</h1>
+      <div class="input-group">
+        <input id="channelName" type="text" class="form-control" placeholder="Channel" />
+        <span class="input-group-btn">
+              <button id="createChannel" class="btn btn-default" type="button">Create!</button>
+            </span>
+      </div>
+    </div>
 
   </body>
 </html>
