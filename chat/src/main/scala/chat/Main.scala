@@ -1,13 +1,15 @@
 package chat
 
 import util._
+
 import loci._
 import loci.communicator.ws.akka.{WS, WebSocketListener}
+import loci.contexts.Pooled.Implicits.global
+
 import akka.http.scaladsl.model.ContentType
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.HttpCharsets._
 import akka.http.scaladsl.server.Directives._
-import loci.contexts.Pooled.Implicits.global
 
 import scala.scalajs.js
 
