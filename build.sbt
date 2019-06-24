@@ -37,9 +37,7 @@ val librariesMultitier = libraryDependencies ++= Seq(
   "de.tuda.stg" %%% "scala-loci-serializer-upickle" % "0.3.2",
   "de.tuda.stg" %%% "scala-loci-communicator-ws-akka" % "0.3.2",
   "de.tuda.stg" %%% "scala-loci-communicator-webrtc" % "0.3.2",
-  "de.tuda.stg" %%% "scala-loci-lang-transmitter-rescala" % "0.3.2",
-  "com.lihaoyi" %%% "scalatags" % "0.6.7",
-  "de.tuda.stg" %%%! "rescalatags" % "0.19.0")
+  "de.tuda.stg" %%% "scala-loci-lang-transmitter-rescala" % "0.3.2")
 
 val librariesClientServed = Seq(
   dependencyOverrides += "org.webjars.bower" % "jquery" % "1.12.0",
