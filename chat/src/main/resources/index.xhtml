@@ -13,7 +13,6 @@
       .close { float:none; vertical-align: top; visibility: hidden }
       .own { color: darkgray }
       a:hover .close { visibility: visible }
-
       ol { margin: 0; padding: 0; height: 340px; overflow: auto }
       li { margin: 0; padding: 0; list-style: none }
       html { color: black; background: white }
@@ -25,8 +24,21 @@
     <script type="text/javascript" src="/app.js"></script>
   </head>
 
-
+  
   <body class="container">
+    <h1 class="page-header">Chat</h1>
+
+    <div class="input-group">
+      <input id="message" type="text" class="form-control" placeholder="Type your message ..." />
+      <span class="input-group-btn">
+        <button id="send" class="btn btn-default" type="button">Send</button>
+      </span>
+    </div>
+
+    <div class="well">
+      <ol id="chatlog"></ol>
+    </div>
+
 
   </body>
 </html>
