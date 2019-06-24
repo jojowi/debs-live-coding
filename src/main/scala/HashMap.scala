@@ -37,7 +37,7 @@ import scala.math.BigInt
   def main(): Unit on Node =
     on[Node] {
 
-      var notif: Notifiable[loci.Remote[ChordHashMap.this.Node]] = null
+      var notif: Notifiable[Remote[Node]] = null
       if (init) notif = remote[Node].joined.foreach(node => {
         notif.remove()
         initialize(node)
@@ -119,7 +119,7 @@ import scala.math.BigInt
 
   def initPred(node: Remote[Node]) = on[Node].local {
     val pred = Await.result((remote(node) call findPred(uid)).asLocal, TIMEOUT)
-    var notif: Notifiable[loci.Remote[ChordHashMap.this.Node]] = null
+    var notif: Notifiable[Remote[Node]] = null
 
     notif = remote[Node].joined.foreach(predRemote => {
       predRemote.protocol match {
@@ -144,7 +144,7 @@ import scala.math.BigInt
 
   def initSucc(pred: Remote[Node]) = on[Node].local {
     val succ = Await.result((remote(pred) call getSucc()).asLocal, TIMEOUT)
-    var notif: Notifiable[loci.Remote[ChordHashMap.this.Node]] = null
+    var notif: Notifiable[Remote[Node]] = null
     notif = remote[Node].joined.foreach(node => {
       node.protocol match {
         case TCP(host, port) =>
@@ -201,8 +201,8 @@ import scala.math.BigInt
 
   def between(pred: Array[Byte], key: Array[Byte], uid: Array[Byte]): Boolean = {
     (compare(pred, uid) < 0 && compare(pred, key) < 0 && compare(uid, key) > 0) ||
-      (compare(pred, uid) > 0 && compare(pred, key) > 0 && compare(uid, key) > 0) ||
-      (compare(pred, uid) > 0 && compare(pred, key) < 0 && compare(uid, key) < 0)
+      (compare(pred, uid) > 0 && compare(uid, key) > 0) ||
+      (compare(pred, uid) > 0 && compare(pred, key) < 0)
   }
 
   def createUID(): Array[Byte] = {
