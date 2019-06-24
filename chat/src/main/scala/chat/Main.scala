@@ -30,19 +30,8 @@ object Server extends App {
       }
     }
 
-  HttpServer start (route, "localhost", 8080) foreach { server =>
-    val runtime = multitier start new Instance[Application.Server](
-      listen[Application.Client] { webSocket })
 
-    runtime.terminated onComplete { _ =>
-      server.stop
-    }
-  }
 }
 
 object Client extends js.JSApp {
-  def main() = multitier start new Instance[Application.Client](
-      connect[Application.Server] { WS("ws://localhost:8080") }) {
-    val ui = new Frontend
-  }
 }
