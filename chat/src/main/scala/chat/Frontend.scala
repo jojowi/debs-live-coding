@@ -1,12 +1,11 @@
 package chat
 
-import rescala.Evt
+import rescala._
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic
 import scala.scalajs.js.Dynamic.global
 import scala.scalajs.js.JSConverters._
-import rescala._
 
 class Frontend {
   private object ui {
