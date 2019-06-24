@@ -16,12 +16,10 @@ class Frontend {
   }
   val message = Evt[String]
 
-  private val $ = global.$
-
-  def addMessages(messages: Seq[String]): Unit = $ { () =>
+  def addMessages(messages: Seq[String]): Unit = global $ { () =>
     ui.chatlog append
       (messages.reverseIterator map { case message =>
-        $("""<li/>""") text message
+        global $("""<li/>""") text message
       }).toJSArray
 
     val last = ui.chatlog.children() get -1
@@ -29,12 +27,12 @@ class Frontend {
       last.scrollIntoView(false)
   }
 
-  def setMessages(messages: Seq[String]): Unit = $ { () =>
+  def setMessages(messages: Seq[String]): Unit = global $ { () =>
     ui.chatlog.empty()
     addMessages(messages)
   }
 
-  $ { () =>
+  global $ { () =>
     ui.chatlog = global $ "#chatlog"
     ui.messageField = global $ "#message"
     ui.sendButton = global $ "#send"

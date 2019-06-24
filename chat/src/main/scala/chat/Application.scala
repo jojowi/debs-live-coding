@@ -14,17 +14,17 @@ object Application {
 
   val ui: Local[Frontend] on Client
 
-  val messages = on[Server] { implicit! => Var(List[String]()) }
+  val messages = on[Server] { Var(List[String]()) }
 
-  val message = on[Client] { implicit! => ui.message }
+  val message = on[Client] { ui.message }
 
   def main(): Unit on Peer =
-    (on[Server] {implicit! =>
+    (on[Server] {
       message.asLocalFromAllSeq observe { case (index,message) =>
         messages.transform(messages => message :: messages)
       }
     }
-    and on[Client] { implicit! =>
+    and on[Client] {
       messages.asLocal observe { list =>
         ui.setMessages(list)
       }
