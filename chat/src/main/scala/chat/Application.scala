@@ -28,16 +28,16 @@ object Application {
   val ui: Local[Frontend] on Client
   var handler: Local[Observe] on Client = _
 
-  var messages = on[Server] { implicit! => Var[Map[Int,Seq[String]]](Map.empty) }
-  val channels = on[Server] { implicit! => Var(List[Channel]()) }
+  var messages = on[Server] { Var[Map[Int,Seq[String]]](Map.empty) }
+  val channels = on[Server] { Var(List[Channel]()) }
 
-  val message = on[Client] { implicit! => ui.message }
-  val channel = on[Client] { implicit! => ui.channel }
+  val message = on[Client] { ui.message }
+  val channel = on[Client] { ui.channel }
 
-  var nextid = on[Server] { implicit! => 0 }
+  var nextid = on[Server] { 0 }
 
   def main(): Unit on Peer =
-    (on[Server] { implicit ! =>
+    (on[Server] {
       message.asLocalFromAllSeq observe { case (remote, message) =>
         messages.transform(messages => {
           val channelMessages = messages.getOrElse(message.channel, Seq.empty)
@@ -51,7 +51,7 @@ object Application {
         channels.transform(channels => channel :: channels)
       }
     }
-      and on[Client] { implicit! =>
+      and on[Client] {
       channels.asLocal observe { list =>
         ui.setChannels(list)
       }

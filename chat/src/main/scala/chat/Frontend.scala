@@ -26,32 +26,30 @@ class Frontend {
   val channel = Evt[String]
   val currentChannel = Var(new Channel("", -1))
 
-  private val $ = global.$
-
-  def setChannels(channels: Seq[Channel]): Unit = $ { () =>
+  def setChannels(channels: Seq[Channel]): Unit = global $ { () =>
     ui.channelTable.empty();
     ui.channelTable.append("<tr><th>ID</th><th>Title</th></tr>");
     channels.reverseIterator foreach { channel =>
       ui.channelTable append (
-        $("<tr/>") append (
-          $("<td/>") text channel.id
+        global $("<tr/>") append (
+            global $("<td/>") text channel.id
           ) append (
-          $("<td/>") text channel.name
+            global $("<td/>") text channel.name
           ) append (
-          $("""<button class="btn btn-default"/>""") click { event: Dynamic =>
-            gotoChannel(channel)
-          } text "Enter"
+            global $("""<button class="btn btn-default"/>""") click { event: Dynamic =>
+              gotoChannel(channel)
+            } text "Enter"
           )
         )
     }
   }
 
-  def setMessages(messages: Seq[String]): Unit = $ { () =>
+  def setMessages(messages: Seq[String]): Unit = global $ { () =>
     ui.chatlog.empty()
 
     ui.chatlog append
       (messages.reverseIterator map { case message =>
-        $("<li/>") text message
+        global $("<li/>") text message
       }).toJSArray
 
     val last = ui.chatlog.children() get -1
@@ -59,14 +57,14 @@ class Frontend {
       last.scrollIntoView(false)
   }
 
-  private def gotoChannel(channel: Channel): Unit = $ { () =>
+  private def gotoChannel(channel: Channel): Unit = global $ { () =>
     currentChannel.set(channel)
     ui.mainView.hide()
     ui.channelView.show()
     ui.channelTitle text channel.name
   }
 
-  $ { () =>
+  global $ { () =>
     ui.chatlog = global $ "#chatlog"
     ui.messageField = global $ "#message"
     ui.sendButton = global $ "#send"
